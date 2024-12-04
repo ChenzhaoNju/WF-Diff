@@ -2,7 +2,7 @@
 
 Chen Zhao, Weiling Cai, Chenyu Dong and Ziqi Zeng
 
-[![paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2311.16845)
+[![CVPR](https://img.shields.io/badge/CVPR-Paper-<COLOR>.svg)](https://openaccess.thecvf.com/content/CVPR2024/papers/Zhao_Wavelet-based_Fourier_Information_Interaction_with_Frequency_Diffusion_Adjustment_for_Underwater_CVPR_2024_paper.pdf)
 
 <hr />
 
@@ -11,57 +11,42 @@ In this paper, we introduce a novel Underwater Image Enhancement (UIE) framework
 WF-Diff consists of two detachable networks: Wavelet-based Fourier information interaction network (WFI2-net) and Frequency Residual Diffusion Adjustment Module (FRDAM). With our full exploration of the frequency domain information, WFI2-net aims to achieve preliminary enhancement of frequency information in the wavelet space. Our proposed FRDAM can further refine the high- and low-frequency information of the initial enhanced images, which can be viewed as a plug-and-play universal module to adjust the detail of the underwater images. With the above techniques, our algorithm can show SOTA performance on real-world underwater image datasets, and achieves competitive performance in visual quality.* 
 <hr />
 
-## Network Architecture
 
 
-## Installation and Data Preparation
 
 
+Note: To facilitate easier replication and usage by the community, we have integrated the original code into the BasicIR framework. As a result, there are slight differences from the original paper. The updated visual results and pre-trained models can be found on [PA-Diff](<https://github.com/chenydong/PA-Diff>).
 
 ## Training
 
-After preparing the training data in ```data/``` directory, use 
+After preparing the training data, use 
 ```
-python train.py
+CUDA_VISIBLE_DEVICES=1  python basicsr/train.py -opt options/train/train_Wfdiff.yml 
 ```
-to start the training of the model. 
 
-```
-python train.py
-```
 
 ## Testing
 
-After preparing the testing data in ```data/test/``` directory. 
-
-
+After preparing the testing data, use 
 ```
-python test.py 
+CUDA_VISIBLE_DEVICES=1  python basicsr/test.py -opt options/test/test_wfdiff.yml
 ```
-
-
-
-
-
-## Results
-
-临近毕业，遇到一大坨事，代码开源预计5月份左右~~~
-
-Nearing graduation, encountering a bunch of things, the code open-source is expected around May~~~
-
-
 
 
 ## Citation
 If you use our work, please consider citing:
 
   
-    
-    @article{zhao2023wavelet,
-      title={Wavelet-based Fourier Information Interaction with Frequency Diffusion Adjustment for Underwater Image Restoration},
-      author={Zhao, Chen and Cai, Weiling and Dong, Chenyu and Hu, Chengwei},
-      journal={arXiv preprint arXiv:2311.16845},
-      year={2023}
+ 
+    @inproceedings{zhao2024wavelet,
+    title={Wavelet-based fourier information interaction with frequency diffusion adjustment for underwater image restoration},
+    author={Zhao, Chen and Cai, Weiling and Dong, Chenyu and Hu, Chengwei},
+    booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+    pages={8281--8291}, year={2024}
+    }
+
+
+
       
     
 
