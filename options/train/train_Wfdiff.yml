@@ -1,0 +1,142 @@
+# GENERATE TIME: Sun Nov  3 17:56:40 2024
+# CMD:
+# basicsr/train.py -opt options/train/train_Padiff.yml
+
+name: Wfdiffx2-train-UIEB-bs16
+model_type: WfdiffModel
+scale: 1
+num_gpu: 1
+manual_seed: 10
+
+# dataset and data loader settings
+datasets:
+  train:
+    task: UIE
+    name: UIEB
+    type: PairedImageDataset
+    dataroot_gt: /home/test/Workspace/zc/dataset_IR/UIEB/train/target
+    dataroot_lq: /home/test/Workspace/zc/dataset_IR/UIEB/train/input
+    filename_tmpl: '{}'
+    io_backend:
+      type: disk
+
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 8
+    batch_size_per_gpu: 16
+    dataset_enlarge_ratio: 100
+    prefetch_mode: ~
+
+  val:
+    name: UIEB
+    type: PairedImageDataset
+    dataroot_gt: /home/test/Workspace/zc/dataset_IR/UIEB/test/target
+    dataroot_lq: /home/test/Workspace/zc/dataset_IR/UIEB/test/input
+    filename_tmpl: '{}'
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: WfDiffx2
+  # Diff参数
+  in_channel: 6
+  out_channel: 3
+  inner_channel: 48
+  norm_groups: 24
+  with_time_emb: true
+  schedule_opt:
+    schedule: linear
+    n_timestep: 2000
+    linear_start: !!float 1e-6
+    linear_end: !!float 1e-2
+  sample_proc: ddim
+  # INR参数
+  local_ensemble: true
+  feat_unfold: true
+  cell_decode: true
+  # PPG参数
+  ppg_input_channels: 3
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  optim_g:
+    type: Adam
+    lr: !!float 2e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [250000, 400000, 450000, 475000]
+    gamma: 0.5
+
+  total_iter: 2000000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  Rec_loss:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+  amp_loss:
+    type: AFFTLoss
+    loss_weight: 1.0
+    reduction: mean
+  high_loss:
+    type: MSELoss
+    loss_weight: 1.0
+    reduction: mean
+  diff_loss:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+# validation settings
+val:
+  val_freq: !!float 5e3
+  #val_freq: !!float 1
+  save_img: false
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 2
+      test_y_channel: true
+    ssim:
+      type: calculate_ssim
+      crop_border: 2
+      test_y_channel: true
+    # lpips:
+    #   type: calculate_lpips
+    #   crop_border: 2
+    #   test_y_channel: true
+    
+
+# logging settings
+logger:
+  print_freq: 200
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist:
+  find_unused_parameters: true
+dist_params:
+  backend: nccl
+  port: 29500
+
+
