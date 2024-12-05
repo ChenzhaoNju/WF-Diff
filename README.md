@@ -11,11 +11,11 @@ In this paper, we introduce a novel Underwater Image Enhancement (UIE) framework
 WF-Diff consists of two detachable networks: Wavelet-based Fourier information interaction network (WFI2-net) and Frequency Residual Diffusion Adjustment Module (FRDAM). With our full exploration of the frequency domain information, WFI2-net aims to achieve preliminary enhancement of frequency information in the wavelet space. Our proposed FRDAM can further refine the high- and low-frequency information of the initial enhanced images, which can be viewed as a plug-and-play universal module to adjust the detail of the underwater images. With the above techniques, our algorithm can show SOTA performance on real-world underwater image datasets, and achieves competitive performance in visual quality.* 
 <hr />
 
+## Note！！！
+Due to the lack of standardized experimental settings in the field of underwater image enhancement (e.g., some methods are evaluated at full resolution while others are reshaped to 256x256), there is currently no unified benchmark. However, reshaping to 256x256 often leads to semantic distortion, which may adversely affect model evaluation. To address this issue, we will soon release a standardized experimental protocol along with corresponding visual results with sota UIE methods. Our protocol will adopt consistent training settings and full-resolution inference (for methods constrained to 256 resolution, we will apply a cropping and stacking strategy during testing). Furthermore, this will include pre-trained models and visual results for our latest methods (WF-DIFF, PA-DIFF, OMAMBA), as well as training models and visual results for comparison methods.
 
 
-
-
-Note: To facilitate easier replication and usage by the community, we have integrated the original code into the BasicIR framework. As a result, there are slight differences from the original paper. The updated visual results and pre-trained models can be found on [PA-Diff](<https://github.com/chenydong/PA-Diff>).
+Moreover, to facilitate easier replication and usage by the community, we have integrated the original code into the BasicIR framework. As a result, there are slight differences from the original paper. The updated visual results and pre-trained models can be found on [PA-Diff](<https://github.com/chenydong/PA-Diff>).
 
 ## Training
 
