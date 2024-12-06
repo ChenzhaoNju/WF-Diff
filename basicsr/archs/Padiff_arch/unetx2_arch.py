@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from inspect import isfunction
-from .unet_block.trans_block_eca import TransformerBlock ,ResidualBlock
+from .unet_block.trans_block_eca import ResidualBlock
 from .unet_block.cross_attention_module import CFC
 
 
