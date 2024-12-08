@@ -17,6 +17,25 @@ Due to the lack of standardized experimental settings in the field of underwater
 
 Moreover, to facilitate easier replication and usage by the community, we have integrated the original code into the BasicIR framework. As a result, there are slight differences from the original paper. The updated visual results and pre-trained models can be found on [PA-Diff](<https://github.com/chenydong/PA-Diff>).
 
+
+## Datasets
+We provide the divided dataset for UIEB and LSUI.
+   
+| UIEB | [UIEB](    ) | 
+
+| LSUI | [LSUI](     ) | 
+
+提取码:xxx
+
+## Pretrained Models
+We provide  pretrained models for UIEB and LSUI.
+   
+| Model | UIEB | LSUI | 
+
+| WF-Diff  | [UIEB](     ) | [LSUI](     ) 
+
+提取码:xxx
+
 ## Training
 
 After preparing the training data, use 
@@ -43,6 +62,15 @@ If you use our work, please consider citing:
     author={Zhao, Chen and Cai, Weiling and Dong, Chenyu and Hu, Chengwei},
     booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
     pages={8281--8291}, year={2024}
+    }
+
+    @inproceedings{zhao2024toward,
+    title={Toward Sufficient Spatial-Frequency Interaction for Gradient-Aware Underwater Image Enhancement},
+    author={Zhao, Chen and Cai, Weiling and Dong, Chenyu and Zeng, Ziqi},
+    booktitle={ICASSP 2024-2024 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+    pages={3220--3224},
+    year={2024},
+    organization={IEEE}
     }
 
 
