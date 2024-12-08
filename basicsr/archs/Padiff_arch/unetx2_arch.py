@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from inspect import isfunction
-from .unet_block.trans_block_eca import ResidualBlock
+from .unet_block.trans_block_eca import ResidualBlock,TransformerBlock
 from .unet_block.cross_attention_module import CFC
 
 
@@ -54,7 +54,9 @@ class ResnetBloc_eca(nn.Module):
         super().__init__()
         self.with_attn = with_attn
         if with_attn:
-            self.attn = ResidualBlock(dim, dim, dim_out, is_noise=True)
+            #self.attn = ResidualBlock(dim, dim, dim_out, is_noise=True)
+            self.attn = TransformerBlock(dim=int(dim), num_heads=dim, ffn_expansion_factor=2.66,
+                               bias=False, LayerNorm_type='WithBias',with_PPU= with_PPU)
         
         self.mlp = nn.Sequential(
             Swish(),
