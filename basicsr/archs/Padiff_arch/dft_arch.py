@@ -171,6 +171,75 @@ class FeedForward(nn.Module):
 
 ##########################################################################
 ## Multi-DConv Head Transposed Self-Attention (MDTA)
+
+class ChannelAttention(nn.Module):
+    def __init__(self, in_channels, reduction=16):
+        super(ChannelAttention, self).__init__()
+        # Squeeze操作：全局平均池化层
+        self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
+        
+        # Excitation操作：全连接层
+        self.fc1 = nn.Conv2d(in_channels, in_channels // reduction, kernel_size=1, stride=1, padding=0)
+        self.fc2 = nn.Conv2d(in_channels // reduction, in_channels, kernel_size=1, stride=1, padding=0)
+        
+        # Sigmoid激活函数，用于输出注意力权重
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        # Squeeze操作
+        avg_out = self.global_avg_pool(x)
+        
+        # Excitation操作
+        x = self.fc1(avg_out)
+        x = F.relu(x)
+        x = self.fc2(x)
+        
+        # 得到通道注意力权重
+        attention = self.sigmoid(x)
+        
+        # 通道加权
+        return x * attention
+
+class Wide_Transformer(nn.Module):
+    def __init__(self, dim, num_heads, bias):
+        super(Wide_Transformer, self).__init__()
+        self.num_heads = num_heads
+        self.temperature = nn.Parameter(torch.ones(num_heads, 1, 1))
+
+        self.qkv = nn.Conv2d(dim, dim * 4, kernel_size=1, bias=bias)
+        self.qkv_dwconv = nn.Conv2d(dim * 4, dim * 4, kernel_size=3, stride=1, padding=1, groups=dim * 3, bias=bias)
+        self.project_out = nn.Conv2d(dim, dim, kernel_size=1, bias=bias)
+        self.channel=ChannelAttention(dim)
+
+    def forward(self, x):
+        res=x
+        b, c, h, w = x.shape
+        qkv = self.qkv_dwconv(self.qkv(x))
+        q, k, v,l = qkv.chunk(4, dim=1)
+
+        q = rearrange(q, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
+        k = rearrange(k, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
+        v = rearrange(v, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
+        l = rearrange(l, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
+
+        L=self.channel(l)
+
+        q = torch.nn.functional.normalize(q, dim=-1)
+        k = torch.nn.functional.normalize(k, dim=-1)
+
+        attn = (q @ k.transpose(-2, -1)) * self.temperature
+
+        attn = attn.softmax(dim=-1)
+
+        out = (attn @ v)
+
+        out = rearrange(out, 'b head c (h w) -> b (head c) h w', head=self.num_heads, h=h, w=w)
+
+        out=L+out+res
+
+        out = self.project_out(out)+L
+        return out
+    
 class Attention(nn.Module):
     def __init__(self, dim, num_heads, bias):
         super(Attention, self).__init__()
